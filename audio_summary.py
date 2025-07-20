@@ -6,7 +6,7 @@ import traceback
 import os
 import json
 
-openai.api_key = "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"
+openai.api_key = "your_key"
 
 if not openai.api_key:
     print("Please set it or replace this line with your key.")
@@ -22,7 +22,7 @@ def transcribe_audio(audio):
             sf.write(tmp.name, audio[1], audio[0])  # audio[0]-sampling rate, audio[1]-data
             with open(tmp.name, "rb") as f:
                 transcript = openai.audio.transcriptions.create(
-                    model="whisper-1", # Using whisper-1 as it's the standard transcription model
+                    model="whisper-1", # Using whisper-1 or gpt-4o-transcribe, either is ok. 
                     file=f
                 )
                 return transcript.text
@@ -138,14 +138,14 @@ with gr.Blocks() as demo:
     with gr.Row():
         transcribe_btn = gr.Button("🎧 Transcribe")
         summary_btn = gr.Button("🩺 Generate Medical Summary")
-        dental_json_btn = gr.Button("🦷 Generate Dental Treatment JSON") # New button
+        dental_json_btn = gr.Button("🦷 Generate Dental Treatment JSON")
 
     summary_output = gr.Textbox(label="📄 Medical Summary", lines=10)
-    dental_json_output = gr.Textbox(label="🦷 Dental Treatment JSON", lines=10) # New output textbox
+    dental_json_output = gr.Textbox(label="🦷 Dental Treatment JSON", lines=10) 
 
     transcribe_btn.click(fn=do_transcription, inputs=mic, outputs=output_textbox)
     summary_btn.click(fn=do_medical_summary, outputs=summary_output)
-    dental_json_btn.click(fn=do_dental_json, outputs=dental_json_output) # Link new button to new function
+    dental_json_btn.click(fn=do_dental_json, outputs=dental_json_output) 
 
 # Set share=True to get a public link when running in environments like Colab or Hugging Face Spaces
 demo.launch(share=True)
